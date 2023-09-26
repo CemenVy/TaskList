@@ -7,11 +7,12 @@
 
 import UIKit
 
-class NewTaskViewController: UIViewController {
+final class NewTaskViewController: UIViewController {
 
+    weak var delegate: NewTaskViewControllerDelegate?
+    
     override func viewDidLoad() {
         super.viewDidLoad()
-
     }
 
 }

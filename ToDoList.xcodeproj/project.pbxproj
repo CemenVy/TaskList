@@ -17,7 +17,7 @@
 /* End PBXBuildFile section */
 
 /* Begin PBXFileReference section */
-		6080AEA02AC2DCD800A8FF00 /* TaskList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = TaskList.app; sourceTree = BUILT_PRODUCTS_DIR; };
+		6080AEA02AC2DCD800A8FF00 /* ToDoList.app */ = {isa = PBXFileReference; explicitFileType = wrapper.application; includeInIndex = 0; path = ToDoList.app; sourceTree = BUILT_PRODUCTS_DIR; };
 		6080AEA32AC2DCD800A8FF00 /* AppDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = AppDelegate.swift; sourceTree = "<group>"; };
 		6080AEA52AC2DCD800A8FF00 /* SceneDelegate.swift */ = {isa = PBXFileReference; lastKnownFileType = sourcecode.swift; path = SceneDelegate.swift; sourceTree = "<group>"; };
 		6080AEAD2AC2DCD800A8FF00 /* TaskList.xcdatamodel */ = {isa = PBXFileReference; lastKnownFileType = wrapper.xcdatamodel; path = TaskList.xcdatamodel; sourceTree = "<group>"; };
@@ -50,7 +50,7 @@
 		6080AEA12AC2DCD800A8FF00 /* Products */ = {
 			isa = PBXGroup;
 			children = (
-				6080AEA02AC2DCD800A8FF00 /* TaskList.app */,
+				6080AEA02AC2DCD800A8FF00 /* ToDoList.app */,
 			);
 			name = Products;
 			sourceTree = "<group>";
@@ -97,9 +97,9 @@
 /* End PBXGroup section */
 
 /* Begin PBXNativeTarget section */
-		6080AE9F2AC2DCD800A8FF00 /* TaskList */ = {
+		6080AE9F2AC2DCD800A8FF00 /* ToDoList */ = {
 			isa = PBXNativeTarget;
-			buildConfigurationList = 6080AEB72AC2DCD900A8FF00 /* Build configuration list for PBXNativeTarget "TaskList" */;
+			buildConfigurationList = 6080AEB72AC2DCD900A8FF00 /* Build configuration list for PBXNativeTarget "ToDoList" */;
 			buildPhases = (
 				6080AE9C2AC2DCD800A8FF00 /* Sources */,
 				6080AE9D2AC2DCD800A8FF00 /* Frameworks */,
@@ -109,9 +109,9 @@
 			);
 			dependencies = (
 			);
-			name = TaskList;
+			name = ToDoList;
 			productName = TaskList;
-			productReference = 6080AEA02AC2DCD800A8FF00 /* TaskList.app */;
+			productReference = 6080AEA02AC2DCD800A8FF00 /* ToDoList.app */;
 			productType = "com.apple.product-type.application";
 		};
 /* End PBXNativeTarget section */
@@ -129,7 +129,7 @@
 					};
 				};
 			};
-			buildConfigurationList = 6080AE9B2AC2DCD800A8FF00 /* Build configuration list for PBXProject "TaskList" */;
+			buildConfigurationList = 6080AE9B2AC2DCD800A8FF00 /* Build configuration list for PBXProject "ToDoList" */;
 			compatibilityVersion = "Xcode 14.0";
 			developmentRegion = en;
 			hasScannedForEncodings = 0;
@@ -142,7 +142,7 @@
 			projectDirPath = "";
 			projectRoot = "";
 			targets = (
-				6080AE9F2AC2DCD800A8FF00 /* TaskList */,
+				6080AE9F2AC2DCD800A8FF00 /* ToDoList */,
 			);
 		};
 /* End PBXProject section */
@@ -354,7 +354,7 @@
 /* End XCBuildConfiguration section */
 
 /* Begin XCConfigurationList section */
-		6080AE9B2AC2DCD800A8FF00 /* Build configuration list for PBXProject "TaskList" */ = {
+		6080AE9B2AC2DCD800A8FF00 /* Build configuration list for PBXProject "ToDoList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6080AEB52AC2DCD900A8FF00 /* Debug */,
@@ -363,7 +363,7 @@
 			defaultConfigurationIsVisible = 0;
 			defaultConfigurationName = Release;
 		};
-		6080AEB72AC2DCD900A8FF00 /* Build configuration list for PBXNativeTarget "TaskList" */ = {
+		6080AEB72AC2DCD900A8FF00 /* Build configuration list for PBXNativeTarget "ToDoList" */ = {
 			isa = XCConfigurationList;
 			buildConfigurations = (
 				6080AEB82AC2DCD900A8FF00 /* Debug */,

@@ -59,6 +59,8 @@ final class FilledButtonFactory: ButtonFactory {
 }
 
 final class NewTaskViewController: UIViewController {
+    
+    // MARK: - Private Properties
     private lazy var taskTextField: UITextField = {
         let textField = UITextField()
         textField.placeholder = "New Task"
@@ -72,7 +74,9 @@ final class NewTaskViewController: UIViewController {
             title: "Save",
             color: UIColor.blue,
             action: UIAction { [unowned self] _ in
-//                save()
+                storageManager.save(task: taskTextField.text ?? "")
+                delegate?.reloadData()
+                dismiss(animated: true)
             }
         )
         return filledButtonFactory.createButton()
@@ -88,9 +92,13 @@ final class NewTaskViewController: UIViewController {
         )
         return filledButtonFactory.createButton()
     }()
-
+    
+    private let storageManager = StorageManager.shared
+    
+    // MARK: - Public Properties
     weak var delegate: NewTaskViewControllerDelegate?
     
+    // MARK: - Life View Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
         view.backgroundColor = .white
@@ -98,6 +106,7 @@ final class NewTaskViewController: UIViewController {
         setConstraints()
     }
     
+    // MARK: - Setup UI
     private func setupSubviews(_ subviews: UIView...) {
         subviews.forEach { subview in
             view.addSubview(subview)
@@ -123,5 +132,5 @@ final class NewTaskViewController: UIViewController {
             cancelButton.trailingAnchor.constraint(equalTo: view.trailingAnchor, constant: -40)
         ])
     }
-
+    
 }

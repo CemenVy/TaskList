@@ -7,28 +7,49 @@
 
 import UIKit
 
-protocol NewTaskViewControllerDelegate: AnyObject {
-    func reloadData()
-}
-
 final class TaskListViewController: UITableViewController {
     
     // MARK: - Private Properties
-    private var taskList: [TodoTask] = []
-    private let cellID = "task"
-    
+    private let cellID = "cell"
     private let storageManager = StorageManager.shared
+    private var taskList: [TodoTask] = []
     
-    // MARK: - Life View Cycles
+    // MARK: - View Life Cycles
     override func viewDidLoad() {
         super.viewDidLoad()
-        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
-        view.backgroundColor = .white
-        taskList = storageManager.fetchData()
-        setupNavigationBar()
+        setupView()
+        fetchData()
     }
     
-    // MARK: - UITableViewDataSource
+    // MARK: - Private Methods
+    private func addNewTask() {
+        showAlert()
+    }
+    
+    private func save(taskName: String) {
+        storageManager.create(taskName) { [unowned self] task in
+            taskList.append(task)
+            tableView.insertRows(
+                at: [IndexPath(row: self.taskList.count - 1, section: 0)],
+                with: .automatic
+            )
+        }
+    }
+
+    private func fetchData() {
+        storageManager.fetchData { [unowned self] result in
+            switch result {
+            case .success(let taskList):
+                self.taskList = taskList
+            case .failure(let error):
+                print(error.localizedDescription)
+            }
+        }
+    }
+}
+
+// MARK: - UITableViewDataSource
+extension TaskListViewController {
     override func tableView(_ tableView: UITableView, numberOfRowsInSection section: Int) -> Int {
         taskList.count
     }
@@ -41,92 +62,75 @@ final class TaskListViewController: UITableViewController {
         cell.contentConfiguration = content
         return cell
     }
+}
+
+// MARK: - UITableViewDelegate
+extension TaskListViewController {
+    // Edit task
+    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
+        tableView.deselectRow(at: indexPath, animated: true)
+        let task = taskList[indexPath.row]
+        showAlert(task: task) {
+            tableView.reloadRows(at: [indexPath], with: .automatic)
+        }
+    }
     
-    // MARK: - UITableViewDelegate
+    // Delete task
     override func tableView(_ tableView: UITableView, commit editingStyle: UITableViewCell.EditingStyle, forRowAt indexPath: IndexPath) {
         if editingStyle == .delete {
-            taskList.remove(at: indexPath.row)
+            let task = taskList.remove(at: indexPath.row)
             tableView.deleteRows(at: [indexPath], with: .automatic)
-            storageManager.deletTask(at: indexPath.row)
+            storageManager.delete(task)
         }
     }
-    
-    override func tableView(_ tableView: UITableView, didSelectRowAt indexPath: IndexPath) {
-        let task = taskList[indexPath.row]
-        showAlert(for: task, andMessage: "What do you want to do?")
-    }
-    
-    override func tableView(_ tableView: UITableView, didHighlightRowAt indexPath: IndexPath) {
-         let cell = tableView.cellForRow(at: indexPath)
-         cell?.contentView.backgroundColor = .lightGray
+}
+
+// MARK: - Alert Controller
+extension TaskListViewController {
+    private func showAlert(task: TodoTask? = nil, completion: (() -> Void)? = nil) {
+        let alertFactory = AlertControllerFactory(
+            userAction: task != nil ? .editTask : .newTask,
+            taskTitle: task?.title
+        )
+        let alert = alertFactory.createAlert { [weak self] taskName in
+            if let task, let completion {
+                self?.storageManager.update(task, newName: taskName)
+                completion()
+                return
+            }
+            
+            self?.save(taskName: taskName)
+        }
         
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-     }
-    
-    override func tableView(_ tableView: UITableView, didUnhighlightRowAt indexPath: IndexPath) {
-        let cell = tableView.cellForRow(at: indexPath)
-        cell?.contentView.backgroundColor = .white
-        
-        DispatchQueue.main.asyncAfter(deadline: .now() + 5) {
-            tableView.deselectRow(at: indexPath, animated: true)
-        }
-    }
-    
-    // MARK: - Private Methods
-    @objc private func addNewTask() {
-        let newTaskVC = NewTaskViewController()
-        newTaskVC.delegate = self
-        present(newTaskVC, animated: true)
-    }
-    
-    private func showAlert(for task: TodoTask, andMessage message: String) {
-        let alert = UIAlertController(title: task.title, message: message, preferredStyle: .alert)
-        let updateAction = UIAlertAction(title: "Update task", style: .default) { [unowned self] _ in
-            guard let newTitle = alert.textFields?.first?.text, !newTitle.isEmpty else { return }
-            self.storageManager.update(task: task, newTitle: newTitle)
-            tableView.reloadData()
-        }
-        let cancelAction = UIAlertAction(title: "Cancel", style: .destructive)
-        alert.addAction(updateAction)
-        alert.addAction(cancelAction)
-        alert.addTextField { textField in
-            textField.placeholder = "Update Task"
-        }
         present(alert, animated: true)
     }
 }
 
-    // MARK: - NewTaskViewControllerDelegate
-extension TaskListViewController: NewTaskViewControllerDelegate {
-    func reloadData() {
-        taskList = storageManager.fetchData()
-        tableView.reloadData()
-    }
-}
-
-    // MARK: - SetupUI
+// MARK: - Setup UI
 private extension TaskListViewController {
+    func setupView() {
+        tableView.register(UITableViewCell.self, forCellReuseIdentifier: cellID)
+        view.backgroundColor = .white
+        setupNavigationBar()
+    }
+    
     func setupNavigationBar() {
-        title = "Task list"
+        title = "Task List"
         navigationController?.navigationBar.prefersLargeTitles = true
         
-        // Navigation bar appearance
-        let NavBarAppearance = UINavigationBarAppearance()
-        NavBarAppearance.backgroundColor = UIColor.blue
+        let navBarAppearance = UINavigationBarAppearance()
+        navBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navBarAppearance.backgroundColor = UIColor(named: "myBlue")
         
-        NavBarAppearance.titleTextAttributes = [.foregroundColor: UIColor.white]
-        NavBarAppearance.largeTitleTextAttributes = [.foregroundColor: UIColor.white]
+        navigationController?.navigationBar.standardAppearance = navBarAppearance
+        navigationController?.navigationBar.scrollEdgeAppearance = navBarAppearance
         
-        navigationController?.navigationBar.standardAppearance = NavBarAppearance
-        navigationController?.navigationBar.scrollEdgeAppearance = NavBarAppearance
-        
-        // Add button to navigation bar
         navigationItem.rightBarButtonItem = UIBarButtonItem(
-            barButtonSystemItem: .add,
-            target: self,
-            action: #selector(addNewTask)
+            systemItem: .add,
+            primaryAction: UIAction { [unowned self] _ in
+                addNewTask()
+            }
         )
         
         navigationController?.navigationBar.tintColor = .white
